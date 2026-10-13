@@ -11,5 +11,8 @@ class AppConfig {
   /// API contract the app was built against (project-docs/api/openapi.v1.json).
   static const apiContractVersion = '1.3.0';
 
+  /// Shown on the More page; release builds pass --dart-define=APP_VERSION (pubspec version).
+  static const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
+
   static const timezone = 'Europe/Madrid';
 }

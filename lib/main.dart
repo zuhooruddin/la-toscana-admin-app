@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'core/api.dart';
+import 'core/i18n.dart';
 import 'core/theme.dart';
 import 'screens/auth.dart';
 import 'screens/home.dart';
@@ -20,13 +21,14 @@ class AdminApp extends StatelessWidget {
   const AdminApp({super.key});
   @override
   Widget build(BuildContext context) {
+    final lang = context.select<Session, String>((s) => s.lang);
     return MaterialApp(
-      title: 'La Toscana Gestión',
+      onGenerateTitle: (context) => S.of(context).t('appTitle'),
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),
-      locale: const Locale('es'),
+      locale: Locale(lang),
       supportedLocales: const [Locale('es'), Locale('en')],
-      localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+      localizationsDelegates: const [SDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
       home: const _Gate(),
     );
   }

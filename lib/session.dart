@@ -22,6 +22,7 @@ class Session extends ChangeNotifier {
   Me? me;
   List<StaffBranch> branches = [];
   String? branchId; // null = all my restaurants
+  String lang = 'es';
   bool ready = false;
 
   // realtime
@@ -37,6 +38,7 @@ class Session extends ChangeNotifier {
     await tokens.load();
     final p = await SharedPreferences.getInstance();
     branchId = p.getString('lt_staff_branch');
+    lang = p.getString('lt_staff_lang') ?? (PlatformDispatcher.instance.locale.languageCode == 'en' ? 'en' : 'es');
     if (tokens.hasSession) await _loadMe();
     ready = true;
     notifyListeners();
@@ -79,6 +81,13 @@ class Session extends ChangeNotifier {
       await p.setString('lt_staff_branch', id);
     }
     notifyListeners();
+  }
+
+  Future<void> setLang(String l) async {
+    lang = l;
+    notifyListeners();
+    final p = await SharedPreferences.getInstance();
+    await p.setString('lt_staff_lang', l);
   }
 
   StaffBranch? get branch => branches.where((b) => b.id == branchId).firstOrNull;
