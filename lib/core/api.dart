@@ -99,9 +99,16 @@ class Api {
       final r = await _dio.post<Map<String, dynamic>>('/api/v1/auth/refresh', data: {'refreshToken': tokens.refresh, 'client': 'mobile'});
       await tokens.save(r.data!['accessToken'] as String, r.data!['refreshToken'] as String);
       c.complete(true);
+    } on DioException catch (e) {
+      // Only a rejected refresh token ends the session. Offline, timeouts or rate limiting (429) keep it so the
+      // next request can refresh again instead of signing the user out.
+      final status = e.response?.statusCode;
+      if (status == 401 || status == 403) {
+        await tokens.clear();
+        onSessionExpired?.call();
+      }
+      c.complete(false);
     } catch (_) {
-      await tokens.clear();
-      onSessionExpired?.call();
       c.complete(false);
     } finally {
       _refreshing = null;
