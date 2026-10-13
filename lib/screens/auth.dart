@@ -255,6 +255,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     _next.dispose();
     _repeat.dispose();
     super.dispose();
+    
   }
 
   Future<void> _submit() async {
